@@ -1,7 +1,8 @@
 <?php
  include 'db_head.php';
 
- $godown_name = test_input($_GET['godown_name']);
+ $status = test_input($_GET['status']);
+$mrf_id = test_input($_GET['mrf_id']);
 
 
  
@@ -15,7 +16,7 @@ return $data;
 }
 
 
- $sql = "INSERT INTO internal_godown ( godown_name) VALUES ($godown_name)";
+ $sql =  "UPDATE  material_request_form SET status =  $status WHERE mrf_id =  $mrf_id";
 
   if ($conn->query($sql) === TRUE) {
    echo "ok";

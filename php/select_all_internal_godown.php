@@ -15,13 +15,19 @@ return $data;
 }
 
 
- $sql = "INSERT INTO internal_godown ( godown_name) VALUES ($godown_name)";
+ $sql = "SELECT * FROM internal_godown";
 
-  if ($conn->query($sql) === TRUE) {
-   echo "ok";
-  } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-  }
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    $rows = array();
+    while($r = mysqli_fetch_assoc($result)) {
+        $rows[] = $r;
+    }
+    print json_encode($rows);
+} else {
+  echo "0 result";
+}
 $conn->close();
 
  ?>
