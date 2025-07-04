@@ -55,45 +55,127 @@ physical_stock_array.push({
 
 insert_material_request_form();
 
+$('#part_no').on('input',function(){
+   //check the value not empty
+       if($('#part_no').val() !="")
+       {
+         $('#part_no').autocomplete({
+           //get data from databse return as array of object which contain label,value
+
+           source: function(request, response) {
+             $.ajax({
+               url: "php/mrf_partname_autocomplete.php",
+               type: "get", //send it through get method
+               data: {
+               part_name : $("#part_no").val()
+
+
+             },
+             dataType: "json", 
+               success: function (data) {
+
+             console.log(data);
+             response($.map(data, function(item) {
+               return {
+
+                   label: item.part_name + "-" + item.part_no,
+                   value: item.part_name,
+                   id: item.part_id,
+                   part_name: item.part_name,
+                   reorder_qty: item.reorder_qty,
+                   min_order_qty : item.min_order_qty
+               };
+           }));
+
+               }
+
+             });
+           },
+           minLength: 2,
+           cacheLength: 0,
+           select: function(event, ui) {
+
+             $(this).data("selected-part_id", ui.item.id);
+            $("#minimum_order_qty").val(ui.item.min_order_qty);
+            $("#reorder_quantity").val(ui.item.reorder_qty);
+
+
+           } ,
+
+         }).autocomplete("instance")._renderItem = function(ul, item) {
+           return $("<li>")
+               .append("<div><strong>" + item.part_name + "</strong> - " + item.value + "</div>")
+               .appendTo(ul);
+       };
+       }
+
+      });
+
+        $('#material_request_form_store').on('submit', function (event) {
+        event.preventDefault();
+      
+        if (!this.checkValidity()) {
+          event.stopPropagation();
+          $(this).addClass('was-validated');
+          return;
+        }
+      
+        $(this).addClass('was-validated');
+        insert_material_request_form();
+      
+        // // ✅ All database (AJAX) operations go here
+        // if (actionType === 'submit') {
+        //   // insert via AJAX
+        // } else if (actionType === 'update') {
+        //   // update via AJAX 
+        // }
+      });
+
 });
 
 
 
 
 
-  function insert_material_request_form()
+
+
+
+
+     function insert_material_request_form()
    {
     
-   
+    var bom_production = 0;
+if($("#bom_production_yes").prop("checked"))
+{
+    bom_production = 1;
+}
    $.ajax({
      url: "php/insert_material_request_form.php",
      type: "get", //send it through get method
      data: {
-  emp_id : emp_id,
-part_id : part_id,
-bom_production :  $('#bom_production :selected').val(),
-order_type :  $('#order_type :selected').val(),
-shortfall_qty :  $('#shortfall_qty').val(),
-stock_for_sufficent_days :  $('#stock_for_sufficent_days').val(),
-req_qty :  $('#req_qty').val(),
+     emp_id :  current_user_id,
+part_id :  $("#part_no").data("selected-part_id"),
+bom_production :  bom_production,
+order_type :  $('#order_type').val(),
+shortfall_qty :  $('#shortfall_quantity').val(),
+stock_for_sufficent_days :  $('#stock_for_sufficient_days').val(),
+req_qty :  $('#requirement_quantity').val(),
 req_date :  $('#req_date').val(),
 last_purchase_date :  $('#last_purchase_date').val(),
 last_purchase_qty :  $('#last_purchase_qty').val(),
-material_receipt_status :  $('#material_receipt_status :selected').val(),
-prepared_by : emp_id,
-physical_stock_array : physical_stock_array
+material_receipt_status :  0,
+physical_stock_approved_by :  current_user_id
 
      },
      success: function (response) {
-   console.log(response);
    
    
    if (response.trim() == "ok") {
-
+    
  
    
   }
-   
+   console.log(response);
   
    
    
