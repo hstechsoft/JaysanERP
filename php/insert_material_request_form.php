@@ -13,9 +13,9 @@ $last_purchase_date = test_input($_GET['last_purchase_date']);
 $last_purchase_qty = test_input($_GET['last_purchase_qty']);
 $material_receipt_status = test_input($_GET['material_receipt_status']);
 $prepared_by = test_input($_GET['prepared_by']);
-$physical_stock_array = ($_GET['physical_stock_array']);
 
 
+$physical_stock_array = json_decode($_GET['physical_stock_array'], true);
  
 function test_input($data) {
 $data = trim($data);
