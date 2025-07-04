@@ -53,7 +53,7 @@ physical_stock_array.push({
   qty: 15 
 })
 
-insert_material_request_form();
+// insert_material_request_form();
 
 $('#part_no').on('input',function(){
    //check the value not empty
@@ -160,10 +160,11 @@ order_type :  $('#order_type').val(),
 shortfall_qty :  $('#shortfall_quantity').val(),
 stock_for_sufficent_days :  $('#stock_for_sufficient_days').val(),
 req_qty :  $('#requirement_quantity').val(),
-req_date :  $('#req_date').val(),
+req_date :  $('#requirement_date').val(),
 last_purchase_date :  $('#last_purchase_date').val(),
 last_purchase_qty :  $('#last_purchase_qty').val(),
 material_receipt_status :  0,
+prepared_by: current_user_id,
 physical_stock_approved_by :  current_user_id
 
      },
