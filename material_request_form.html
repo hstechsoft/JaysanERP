@@ -273,27 +273,25 @@
         <th scope="col">Physical Stock</th>
         <th scope="col">Action</th>
       </tr>
-    </thead>
-    <tbody>
       <tr>
   
         <td>
-          <select class="form-select w-100" id="godown_select" required>
-            <option selected disabled value="">Select Godown</option>
-            <option value="Store">Store</option>
-            <option value="Assembly">Assembly</option>
-            <option value="Welding">Welding</option>
-            <option value="Other">Other</option>
-
+          <select class="form-select w-100" id="godown_name" >
+           
           </select>
         </td>
         <td>
           <input type="number" class="form-control w-100" id="physical_stock_input" placeholder="Enter quantity">
         </td>
         <td>
-          <button class="btn btn-success w-100" id="add-btn">Add</button>
+          <button class="btn btn-success w-100" id="add_btn" type="button">Add</button>
         </td>
       </tr>
+    </thead>
+    <tbody id="physical_stock_table_body">
+      
+     
+
     </tbody>
   </table>
 </div>

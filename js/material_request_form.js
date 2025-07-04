@@ -32,6 +32,7 @@ $(web_addr).parent().parent().find("a").eq(0).toggleClass('active')
     
   $("#unamed").text(localStorage.getItem("ls_uname"))
 
+ get_internal_godown();
 
 
  physical_stock_array = [];
@@ -131,6 +132,68 @@ $('#part_no').on('input',function(){
         // }
       });
 
+
+      $("#add_btn").on("click", function(event) {
+        event.preventDefault();
+        // TODO: handle click here
+        console.log($("#godown_name").val());
+
+        if( $("#godown_name").val() == null || $("#physical_stock_input").val() == "")
+        {
+          shw_toast("Error", "Please fill all fields", "error");
+          return;
+        }
+
+
+        console.log($("#godown_name").data("godown_id"));
+       
+
+        $("#physical_stock_table_body").append("<tr data-godown_name='"+ $('#godown_name option:selected').data("godown_id")+"'><td>"+$("#godown_name").val()+"</td><td>"+$("#physical_stock_input").val()+"</td><td><button type='button' class='btn btn-danger btn-sm remove-btn'>Remove</button></td></tr>");
+
+        $("#godown_name").val("");
+        $("#physical_stock_input").val("");
+
+      });
+
+
+      $("#physical_stock_table_body").on("click", "tr td button", function(event) {
+        event.preventDefault();
+        // your logic here
+        var thisrow = $(this).closest("tr");
+        
+          {
+          swal({
+            title: "Are you sure - Delete? ",
+            text: "You will not be recover this  again!",
+            icon: "warning",
+            buttons: [
+              'No, cancel it!',
+              'Yes, I am sure!'
+            ],
+            dangerMode: true,
+          }).then(function(isConfirm) {
+            if (isConfirm) {
+              swal({
+                title: 'Applied!',
+                text: 'successfully Deleted!',
+                icon: 'success'
+              }).then(function() {
+        
+                thisrow.remove();
+                shw_toast("Success", "Row removed successfully", "success");
+        
+        
+              });
+            } else {
+              swal("Cancelled", "This is safe :)", "error");
+            }
+          })
+          }
+      });
+
+
+      
+
 });
 
 
@@ -141,8 +204,24 @@ $('#part_no').on('input',function(){
 
 
 
-     function insert_material_request_form()
-   {
+function insert_material_request_form()
+{
+    var physical_stock_array = [];
+
+    $("#physical_stock_table_body tr").each(function() {
+        var godown_id = $(this).data("godown_name");
+        var physical_stock = $(this).find("td").eq(1).text();
+
+        physical_stock_array.push({
+          godown_id: godown_id,
+          qty: physical_stock
+        });
+
+        console.log(physical_stock_array);
+    });
+
+    
+    
     
     var bom_production = 0;
 if($("#bom_production_yes").prop("checked"))
@@ -165,7 +244,8 @@ last_purchase_date :  $('#last_purchase_date').val(),
 last_purchase_qty :  $('#last_purchase_qty').val(),
 material_receipt_status :  0,
 prepared_by: current_user_id,
-physical_stock_approved_by :  current_user_id
+physical_stock_approved_by :  current_user_id,
+physical_stock_array : JSON.stringify(physical_stock_array),
 
      },
      success: function (response) {
@@ -178,7 +258,7 @@ physical_stock_approved_by :  current_user_id
   }
    console.log(response);
   
-   
+   location.reload();
    
        
      },
@@ -194,8 +274,64 @@ physical_stock_approved_by :  current_user_id
 
 
 
+  function get_internal_godown()
+   {
+    
 
+   
+   $.ajax({
+     url: "php/get_all_internal_godown.php",
+     type: "get", //send it through get method
+     data: {
+     
+     },
+     success: function (response) {
+   
+        $('#godown_name').empty();
+        
+   
+         $('#godown_name').append("<option selected disabled value=''>Select Godown</option>");
+
+   if (response.trim() != "error") {
+
+    if (response.trim() != "0 result")
+    {
+   
+     var obj = JSON.parse(response);
+   var count =0 
+   
+   
+     obj.forEach(function (obj) {
+        count = count +1;
+$('#godown_name').append("<option data-godown_id='"+obj.internal_godown_id+"'>"+obj.godown_name+"</option>")
+
+     });
+
+    
+   }
+   else{
+   // $("#@id@") .append("<td colspan='0' scope='col'>No Data</td>");
+ 
+   }
+  }
+   
   
+   
+   
+       
+     },
+     error: function (xhr) {
+         //Do Something to handle error
+     }
+   });
+   
+   
+   
+      
+   }
+  
+
+
 
    
 
